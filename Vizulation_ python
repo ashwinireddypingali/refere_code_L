@@ -1,0 +1,41 @@
+######## ------------------ BIVARIATE PLOTS (Continuous VS Categorical) -------------------- ##########
+
+def hist_plot(df,variable,Title="Viusalization Results"):
+    df.loc[df.return_status_repurchase==1,variable].plot(kind='hist',color='#29A2C6',alpha=0.7)
+    df.loc[df.return_status_repurchase==0,variable].plot(kind='hist',color='#FF6D31',alpha=0.6)
+    plt.legend(['Return_Yes','Return_No'],bbox_to_anchor=(1.0,1.0))
+    plt.xlabel(variable,size=15)
+    plt.ylabel('Frequency',size=15)
+    plt.title(Title,fontweight='bold',size=15)
+    plt.show()
+    
+######## ------------------- BIVARIATE PLOTS (Categorical Vs Categorical) ----------------------- ##########
+    
+def bivar_plot(data,attribute,fig_widht=12,fig_height=6,width=0.5,Stacked=True,legend=True,title1="",title2=""):
+    
+    ##-----------------plot for to find return rate for each level of categorical attribute-------##
+    
+    fig, axs = plt.subplots(1,2,figsize=(fig_widht,fig_height),squeeze=0)
+    sorted_names = data[attribute].value_counts().index
+    temp_df = pd.crosstab(data[attribute],data.return_status_repurchase,normalize='index')
+    temp_df.reset_index(inplace=True)
+    temp_df.columns = ['Levels','No_prop','Yes_prop']
+    temp_df2 = pd.DataFrame(sorted_names)
+    temp_df2.columns = ['Levels']
+    df_Final = pd.merge(temp_df2,temp_df,left_on='Levels',right_on='Levels')
+    df_Final.plot(kind='bar',stacked=Stacked,legend=0,color=['#FF6D31','#29A2C6'],ax=axs[0,0],width=width)
+    axs[0,0].set_xticklabels(df_Final.Levels, rotation='90',size=15)
+    axs[0,0].set_title(title1,size=20,fontweight='bold')
+    if(legend==True):
+        axs[0,0].legend(bbox_to_anchor=(1.1, 1.05),loc='right')
+        
+######### ------------------ UNIVARIATE PLOTS (FREQUENCY PLOTS) ------------------------- ###########
+
+data[attribute].value_counts().plot(kind='bar',ax=axs[0][1],width=width,color='#6bb69c')
+    plt.title(title2,size=20,fontweight="bold")
+    plt.setp(axs[0, 1].get_xticklabels(),rotation='90',size=15)
+    axs[0,1].set_ylabel('Frequency',size=15)
+    if(legend==True):
+        axs[0,1].legend(bbox_to_anchor=(1.1, 1.05),loc='right')
+        
+
